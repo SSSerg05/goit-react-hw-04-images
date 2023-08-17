@@ -24,25 +24,32 @@ export const App = () => {
   const [total, setTotal] = useState(0);
   
   //componentDidUpdate
-  useEffect(async () => {
+  useEffect(() => {
+      if (!searchQuery) {
+        return
+      } 
+      setIsLoading(true);
+      // setError(null);
 
-    setIsLoading(true);
-    // setError(null);
-
-    try {
-      const data = await fetchData(searchQuery, page);
-      if (data.hits.length === 0) {
-        throw new Error("Gallery empty");
+    async function fetchImages() {
+      try {
+        const data = await fetchData(searchQuery, page);
+        if (data.hits.length === 0) {
+          throw new Error("Gallery empty");
+        }
+        setImagesGallery(prevImagesGallery => [...prevImagesGallery, ...data.hits])
+        setTotal(prevTotal => data.totalHits);
+      } catch (error) {
+        // setError(error.message);
+        onError(error.message);
       }
-      setImagesGallery([...imagesGallery, ...data.hits])
-      setTotal(data.totalHits);
-    } catch (error) {
-      // setError(error.message);
-      onError(error.message);
+      finally {
+        setIsLoading(false);
+      }
+      return;
     }
-    finally {
-      setIsLoading(false);
-    }
+
+    fetchImages();
   }, [page, searchQuery])
 
 
