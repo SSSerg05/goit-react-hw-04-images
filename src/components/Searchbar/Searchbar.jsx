@@ -1,62 +1,56 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import PropTypes from 'prop-types';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { ImSearch } from 'react-icons/im';
 
-export class Searchbar extends Component { 
+export const Searchbar = ({ onSubmit }) => { 
 
-  state = {
-    searchQuery : "",
+  const[searchQuery, setSearchQuery] = useState("");
+
+
+  const handleChangeSearchQuery = event => {
+    setSearchQuery( event.currentTarget.value.toLowerCase() )
   }
 
 
-  handleChangeSearchQuery = event => {
-    this.setState({ searchQuery: event.currentTarget.value.toLowerCase() })
-  }
-
-
-  handleSubmit = event => { 
+  const handleSubmit = event => { 
     event.preventDefault();
 
-    if (this.state.searchQuery.trim() === '') {
+    if (searchQuery.trim() === '') {
       return toast.error('No search query');
       
     }
 
-    this.props.onSubmit(this.state.searchQuery);
-    this.setState({ searchQuery: "" })
+    onSubmit(searchQuery);
+    setSearchQuery("");
   }
 
 
-  render() { 
-    const { searchQuery } = this.state;
-    return (
-      <div className="Searchbar">
-        <form className="SearchForm" onSubmit={ this.handleSubmit }>
-            <input
-              className="SearchForm-input"
-              type="text"
-              name="searchQuery"
-              value={ searchQuery }
-              onChange={ this.handleChangeSearchQuery }
-              // autocomplete="off"
-              // autofocus
-              placeholder="Search images and photos"
-            />
-
-          <button className="SearchForm-button" type="submit">
-            <ImSearch />
-          </button>
-
-          <ToastContainer
-            autoClose={2500}
-            theme="colored"/>
-        </form>
-      </div>
-    )
-  }
+  return (
+    <div className="Searchbar">
+      <form className="SearchForm" onSubmit={ handleSubmit }>
+          <input
+            className="SearchForm-input"
+            type="text"
+            name="searchQuery"
+            value={ searchQuery }
+            onChange={ handleChangeSearchQuery }
+            // autocomplete="off"
+            // autofocus
+            placeholder="Search images and photos"
+          />
+        <button className="SearchForm-button" type="submit">
+          <ImSearch />
+        </button>
+        <ToastContainer
+          autoClose={2500}
+          theme="colored"/>
+      </form>
+    </div>
+  )
+  
 }
 
 Searchbar.propTypes = {
