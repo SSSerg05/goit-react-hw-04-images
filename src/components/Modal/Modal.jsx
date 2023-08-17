@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import PropTypes from 'prop-types';
 
@@ -7,60 +7,53 @@ import { Loader } from "components/Loader/Loader";
 
 const modalRoot = document.querySelector('#modal-root');
 
-export class Modal extends Component {
-  
-  state = {
-    loaded: false,
-  }
+export const Modal = ({ src, tags, onClose }) => {
+  const [loaded, setLoaded] = useState(false)
 
-  componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
-
-    this.setState({ loaded: true });
-  }
-
-  onLoadedLargeImage = () => {
-    this.setState({ loaded: false });
-  }
+  // componentDidMount()
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    setLoaded(true);
+    
+    //componentWillUnmount() {
+    return (() => { 
+      window.removeEventListener('keydown', handleKeyDown)
+    })
+  },[])
 
 
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown)
+  const onLoadedLargeImage = () => {
+    setLoaded(false);
   }
 
 
   // close modal for press in ESC
-  handleKeyDown = e => {
+  const handleKeyDown = e => {
     if (e.code === 'Escape') {
       // console.log("You press ESC");
-      this.props.onClose();
+      onClose();
     }
   }
 
   
   // close modal for click in backdrop || button
-  handleBackdropClick = e => { 
+  const handleBackdropClick = e => { 
     if (e.currentTarget === e.target) { 
-       this.props.onClose();
+       onClose();
     }
   }
 
-
-  render() {
-    const { src, tags } = this.props;
-    const { loaded } = this.state;
-    
-    return createPortal(
-      <div className="Overlay" onClick={ this.handleBackdropClick }>
+  return createPortal(
+      <div className="Overlay" onClick={ handleBackdropClick }>
        
         <div className="BoxModal">
 
           {loaded && <Loader /> }
           
-          <img className="Modal-image" onLoad={ this.onLoadedLargeImage } src={ src } alt={ tags } />
+          <img className="Modal-image" onLoad={ onLoadedLargeImage } src={ src } alt={ tags } />
           
           {!loaded &&
-            <button className="Modal-button-close" type="button" onClick={this.handleBackdropClick}>
+            <button className="Modal-button-close" type="button" onClick={ handleBackdropClick }>
               Close
             </button>}
           
@@ -72,8 +65,7 @@ export class Modal extends Component {
         </div>
         
       </div>
-    , modalRoot)
-  };
+  , modalRoot )
 }
 
 Modal.propTypes = {
