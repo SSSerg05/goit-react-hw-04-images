@@ -37,8 +37,10 @@ export const App = () => {
         if (data.hits.length === 0) {
           throw new Error("Gallery empty");
         }
+        
         setImagesGallery(prevImagesGallery => [...prevImagesGallery, ...data.hits])
-        setTotal(prevTotal => data.totalHits);
+        setTotal(data.totalHits);
+
       } catch (error) {
         // setError(error.message);
         onError(error.message);
@@ -61,7 +63,7 @@ export const App = () => {
 
 
   const onLoadMore = () => {
-    setPage(page + 1)
+    setPage(prev => prev + 1);
   }
 
 
@@ -87,7 +89,6 @@ export const App = () => {
 
   return (
     <div className="App">
-      
       <Searchbar onSubmit={ handleFormSubmit } />
 
 

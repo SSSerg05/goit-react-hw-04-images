@@ -39,7 +39,7 @@ export const Searchbar = ({ onSubmit }) => {
             onChange={ handleChangeSearchQuery }
             // autocomplete="off"
             // autofocus
-            placeholder="Search images and photos"
+            placeholder="Search images and photos: HW-4 Hook"
           />
         <button className="SearchForm-button" type="submit">
           <ImSearch />

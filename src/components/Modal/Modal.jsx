@@ -8,10 +8,21 @@ import { Loader } from "components/Loader/Loader";
 const modalRoot = document.querySelector('#modal-root');
 
 export const Modal = ({ src, tags, onClose }) => {
+
+
   const [loaded, setLoaded] = useState(false)
 
   // componentDidMount()
   useEffect(() => {
+  
+    // close modal for press in ESC
+    const handleKeyDown = e => {
+      if (e.code === 'Escape') {
+        // console.log("You press ESC");
+        onClose();
+      }
+    }
+
     window.addEventListener('keydown', handleKeyDown);
     setLoaded(true);
     
@@ -19,7 +30,7 @@ export const Modal = ({ src, tags, onClose }) => {
     return (() => { 
       window.removeEventListener('keydown', handleKeyDown)
     })
-  },[])
+  },[onClose])
 
 
   const onLoadedLargeImage = () => {
@@ -27,13 +38,13 @@ export const Modal = ({ src, tags, onClose }) => {
   }
 
 
-  // close modal for press in ESC
-  const handleKeyDown = e => {
-    if (e.code === 'Escape') {
-      // console.log("You press ESC");
-      onClose();
-    }
-  }
+  // // close modal for press in ESC
+  // const handleKeyDown = e => {
+  //   if (e.code === 'Escape') {
+  //     // console.log("You press ESC");
+  //     onClose();
+  //   }
+  // }
 
   
   // close modal for click in backdrop || button
